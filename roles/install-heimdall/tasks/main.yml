@@ -1,6 +1,4 @@
 ---
-# tasks file for heimdall
-
 - name: Clone the Heimdall
   git:
     repo: "https://github.com/maticnetwork/heimdall.git"
@@ -11,16 +9,22 @@
 - name: Build heimdall
   command: chdir={{ ansible_env.HOME }}/heimdall make install
 
-- name: Creating symlink for heimdalld
-  file:
+- name: Copy heimdalld
+  ansible.builtin.copy:
     src: "{{ ansible_env.HOME }}/go/bin/heimdalld"
     dest: "/usr/local/bin/heimdalld"
-    state: link
+    owner: root
+    group: root
+    mode: '0755'
+    remote_src: true
   become: true
 
-- name: Creating symlink for heimdallcli
-  file:
+- name: Copy heimdallcli
+  ansible.builtin.copy:
     src: "{{ ansible_env.HOME }}/go/bin/heimdallcli"
     dest: "/usr/local/bin/heimdallcli"
-    state: link
+    owner: root
+    group: root
+    mode: '0755'
+    remote_src: true
   become: true

@@ -6,6 +6,6 @@
     path: "/var/lib/heimdall"
   register: dir_to_check
 
-- fail:
-    msg: "Data directories already exist. To start fresh, use playbook/clean.yml first and then execute setup again."
-  failed_when: dir_to_check.stat.exists and dir_to_check.stat.isdir
+# - fail:
+#     msg: "Data directories already exist. To start fresh, use playbook/clean.yml first and then execute setup again."
+#   failed_when: dir_to_check.stat.exists and dir_to_check.stat.isdir

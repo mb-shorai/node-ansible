@@ -1,6 +1,4 @@
 ---
-# tasks file for install_dependencies
-
 - name: Run the equivalent of "apt-get update" as a separate step
   apt:
     update_cache: yes
@@ -41,7 +39,7 @@
 - name: Install jq
   action: apt pkg=jq
   become: true
-  
+
 - name: Install git
   action: apt pkg=git
   become: true

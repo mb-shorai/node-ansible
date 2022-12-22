@@ -1,6 +1,4 @@
 ---
-# Tasks to setup services
-
 - name: Setup Heimdall service
   copy:
     src: "{{ ansible_env.HOME }}/heimdall/builder/files/heimdalld.service"
@@ -27,4 +25,46 @@
   file:
     path: /etc/matic
     state: directory
+  become: true
+
+- name: Ensure group "bor" exists
+  ansible.builtin.group:
+    name: bor
+    state: present
+  become: true
+
+- name: Add the user 'bor'
+  ansible.builtin.user:
+    name: bor
+    group: bor
+    shell: /bin/bash
+  become: true
+
+- name: Ensure group "heimdall" exists
+  ansible.builtin.group:
+    name: heimdall
+    state: present
+  become: true
+
+- name: Add the user 'heimdall'
+  ansible.builtin.user:
+    name: heimdall
+    group: heimdall
+    shell: /bin/bash
+  become: true
+
+- name: Create /var/lib/heimdall directory
+  file:
+    path: /var/lib/heimdall
+    state: directory
+    owner: heimdall
+    group: heimdall
+  become: true
+
+- name: Create /var/lib/bor directory
+  file:
+    path: /var/lib/bor
+    state: directory
+    owner: bor
+    group: bor
   become: true

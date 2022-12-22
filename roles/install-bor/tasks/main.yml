@@ -1,6 +1,4 @@
 ---
-# tasks file for bor
-
 - name: Cloning the Bor
   git:
     repo: "https://github.com/maticnetwork/bor.git"
@@ -11,9 +9,12 @@
 - name: Build Bor
   command: chdir={{ ansible_env.HOME }}/bor make bor
 
-- name: Creating symlink for bor
-  file:
+- name: Copy bor
+  ansible.builtin.copy:
     src: "{{ ansible_env.HOME }}/bor/build/bin/bor"
     dest: "/usr/local/bin/bor"
-    state: link
+    owner: root
+    group: root
+    mode: '0755'
+    remote_src: true
   become: true
