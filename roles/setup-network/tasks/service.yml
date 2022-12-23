@@ -3,8 +3,27 @@
   copy:
     src: "{{ ansible_env.HOME }}/heimdall/builder/files/heimdalld.service"
     dest: /lib/systemd/system/heimdalld.service
-    mode: "0755"
+    mode: "0644"
     remote_src: true
+  notify: reload heimdalld
+  become: true
+  tags:
+    - heimdall
+
+- name: Ensure /etc/systemd/system/heimdalld.service.d/ exists
+  file:
+    path: /etc/systemd/system/heimdalld.service.d/
+    state: directory
+  become: true
+
+- name: Customize Heimdall service
+  copy:
+    dest: /etc/systemd/system/heimdalld.service.d/override.conf
+    mode: "0644"
+    content: |
+      [Service]
+      ExecStart=
+      ExecStart=/usr/local/bin/heimdalld start --home /mnt/rpc/heimdall --chain=mainnet --rest-server
   notify: reload heimdalld
   become: true
   tags:
@@ -14,8 +33,27 @@
   copy:
     src: "{{ ansible_env.HOME }}/bor/builder/files/bor.service"
     dest: /lib/systemd/system/bor.service
-    mode: "0755"
+    mode: "0644"
     remote_src: true
+  notify: reload bor
+  become: true
+  tags:
+    - bor
+
+- name: Ensure /etc/systemd/system/bor.service.d/ exists
+  file:
+    path: /etc/systemd/system/bor.service.d/
+    state: directory
+  become: true
+
+- name: Customize Bor service
+  copy:
+    dest: /etc/systemd/system/bor.service.d/override.conf
+    mode: "0644"
+    content: |
+      [Service]
+      ExecStart=
+      ExecStart=/usr/local/bin/bor server -config "/mnt/rpc/bor/config.toml"
   notify: reload bor
   become: true
   tags:
@@ -33,7 +71,7 @@
     state: present
   become: true
 
-- name: Add the user 'bor'
+- name: Ensure user 'bor' exists
   ansible.builtin.user:
     name: bor
     group: bor
@@ -46,25 +84,9 @@
     state: present
   become: true
 
-- name: Add the user 'heimdall'
+- name: Ensure user 'heimdall' exists
   ansible.builtin.user:
     name: heimdall
     group: heimdall
     shell: /bin/bash
-  become: true
-
-- name: Create /var/lib/heimdall directory
-  file:
-    path: /var/lib/heimdall
-    state: directory
-    owner: heimdall
-    group: heimdall
-  become: true
-
-- name: Create /var/lib/bor directory
-  file:
-    path: /var/lib/bor
-    state: directory
-    owner: bor
-    group: bor
   become: true
